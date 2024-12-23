@@ -1,0 +1,29 @@
+﻿@page "/view"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+
+@inject ProtectedSessionStorage ProtectedSessionStore
+
+<PageTitle>View Payment Selections</PageTitle>
+
+
+@if (paymentSelections is not null)
+{
+    <p>Account Number: @paymentSelections.AccountNumber</p>
+    <p>Session ID: @paymentSelections.SessionGuid</p>
+}
+else
+{
+    <p>Payment Selection not found</p>
+}
+
+@code 
+{
+    PaymentSelections? paymentSelections;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var result = await ProtectedSessionStore.GetAsync<PaymentSelections>("ProtectedSessionData");
+        paymentSelections = result.Success ? result.Value : default!;
+        StateHasChanged();
+    }
+}
